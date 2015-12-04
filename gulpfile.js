@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     	port: 8002
     });
 
-gulp.task('server:prod', function (cb) {
+gulp.task('server:prod', function () {
 	$.connect.server({
 		root: [
 		    './src'
@@ -14,7 +14,7 @@ gulp.task('server:prod', function (cb) {
 	});
 });
 
-gulp.task('server:dev', function (cb) {
+gulp.task('server:dev', function () {
 	// proxy.register("localhost:8002/languages", "preprod.dailymotion.com/widgets/languages");
 	proxy.register("localhost:8002/languages", "localhost:8003");
 	proxy.register("localhost:8002", "localhost:8001");

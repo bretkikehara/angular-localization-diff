@@ -4,7 +4,17 @@ var gulp = require('gulp'),
     	port: 8002
     });
 
-gulp.task('server', function (cb) {
+gulp.task('server:prod', function (cb) {
+	$.connect.server({
+		root: [
+		    './src'
+		],
+		port: process.env.PORT || 8001,
+		livereload: false
+	});
+});
+
+gulp.task('server:dev', function (cb) {
 	// proxy.register("localhost:8002/languages", "preprod.dailymotion.com/widgets/languages");
 	proxy.register("localhost:8002/languages", "localhost:8003");
 	proxy.register("localhost:8002", "localhost:8001");
@@ -23,4 +33,4 @@ gulp.task('server', function (cb) {
 	});
 });
 
-gulp.task('default', [ 'server' ]);
+gulp.task('default', [ 'server:dev' ]);

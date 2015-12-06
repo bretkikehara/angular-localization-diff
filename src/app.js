@@ -92,6 +92,11 @@ angular.module('myApp', [
 			singleClickEdit: true,
 	        pinnedColumnCount: 1,
 	        enableColResize: true,
+	        groupUseEntireRow: true,
+	        groupKeys: [
+	        	'bundle'
+	        ],
+	        groupDefaultExpanded: true,
 		};
 
 		// load everything into memory;
@@ -124,11 +129,13 @@ angular.module('myApp', [
 		}
 
 		function forLocales (cb) {
-			angular.forEach($scope.localeCache, cb);
+			angular.forEach(Object.keys($scope.localeCache).sort(), function (locale) {
+				cb($scope.localeCache[locale], locale);
+			});
 		}
 
-		function split (key) {
-			return key && key.split('.') || [];
+		function forBundles (bundles, cb) {
+			angular.forEach(Object.keys(bundles).sort(), cb);
 		}
 
 		loadBundles(0, function () {
@@ -139,15 +146,12 @@ angular.module('myApp', [
 
 			headers.push({
 				headerName: 'Bundle',
-				field: 'bundle',
+				field: 'bundleKey',
 				editable: true,
 				onCellValueChanged: function (e) {
-					var newVal = split(e.newValue),
-						oldVal = split(e.oldValue);
-
 					forLocales(function (bundles, localeName) {
-						bundles[newVal[0]][newVal[1]] = bundles[oldVal[0]][oldVal[1]];
-						delete bundles[oldVal[0]][oldVal[1]];
+						bundles[e.data.bundle][e.newValue] = bundles[e.data.bundle][e.oldValue];
+						delete bundles[e.data.bundle][e.oldValue];
 					});
 				}
 			});
@@ -157,24 +161,22 @@ angular.module('myApp', [
 					field: localeName,
 					editable: true,
 					onCellValueChanged: function (e) {
-						var token = split(e.data.bundle),
-							newVal = e.newValue;
-
-						delete bundles[token[0]][token[1]];
-						bundles[token[0]][token[1]] = newVal;
+						delete bundles[e.data.bundle][e.data.bundleKey];
+						bundles[e.data.bundle][e.data.bundleKey] = e.newValue;
 					}
 				});
-				angular.forEach(Object.keys(bundles), function (bundleName) {
+				forBundles(bundles, function (bundleName) {
 					bundleNames[bundleName] = 1;
 				});
 			});
 			forLocales(function (bundles, localeName) {
-				angular.forEach(Object.keys(bundleNames), function (bundleName) {
+				forBundles(bundles, function (bundleName) {
 					angular.forEach(bundles[bundleName], function (message, key) {
 						var name = bundleName + '.' + key;
 						if (!rowData[name]) {
 							rowData[name] = {
-								bundle: name,
+								bundle: bundleName,
+								bundleKey: key,
 							};
 						}
 						rowData[name][localeName] = message;
@@ -210,7 +212,7 @@ angular.module('myApp', [
 
 			forLocales(function (bundles, localeName) {
 				var localeFolder = base.folder(localeName);
-				angular.forEach(bundles, function (bundle, bundleName) {
+				forBundles(bundles, function (bundle, bundleName) {
 					var data = stringify(bundles[bundleName]);
 					localeFolder.file(bundleName + ".lang.json", js_beautify(data, {
 

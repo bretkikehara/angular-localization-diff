@@ -113,7 +113,7 @@ angular.module('myApp', [
 			}
 
 			angular.forEach(CONFIG.bundles, function (bundleName) {
-				locale.bundleReady(bundleName).then(function (bundle) {
+				locale.$$bundleReady(bundleName).then(function (bundle) {
 					$scope.localeCache[localeName][bundleName] = bundle;
 					next();
 				}, function () {

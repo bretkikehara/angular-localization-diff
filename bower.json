@@ -19,7 +19,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular-localization": "bretkikehara/angular-localization#feat-load-bundle",
+    "angular-localization": "bretkikehara/angular-localization#cf47f72e8e",
     "angular-mocks": "~1.4.7",
     "js-beautify": "~1.5.10",
     "downloadjs": "~1.3.1",

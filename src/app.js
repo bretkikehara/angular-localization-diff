@@ -212,7 +212,7 @@ angular.module('myApp', [
 
 			forLocales(function (bundles, localeName) {
 				var localeFolder = base.folder(localeName);
-				forBundles(bundles, function (bundle, bundleName) {
+				forBundles(bundles, function (bundleName) {
 					var data = stringify(bundles[bundleName]);
 					localeFolder.file(bundleName + ".lang.json", js_beautify(data, {
 

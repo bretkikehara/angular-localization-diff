@@ -1,7 +1,9 @@
 var params;
 function getParams (key) {
 	if (!params) {
-		params = {};
+		params = {
+			basePath: 'http://api-stage.dmcdn.net/pxl/publishers/languages'
+		};
 		var entries = window.location.search.substr(1).split('&');
 		entries.forEach(function (entry) {
 			entry = entry.split('=');

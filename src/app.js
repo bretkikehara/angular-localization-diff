@@ -208,15 +208,17 @@ angular.module('myApp', [
 		$scope.export = function ($event) {
 			var zip = new JSZip(),
 				date = moment.utc().format('YYYY-MM-DDTHH_mm_00'),
-			    base = zip.folder("languages_" + date);
+			    base = zip.folder("languages_" + date),
+			    beautifyOpts = {},
+			    fileOpts = {
+					unixPermissions: "644"
+				};
 
 			forLocales(function (bundles, localeName) {
 				var localeFolder = base.folder(localeName);
 				forBundles(bundles, function (bundleName) {
 					var data = stringify(bundles[bundleName]);
-					localeFolder.file(bundleName + ".lang.json", js_beautify(data, {
-
-					}));
+					localeFolder.file(bundleName + ".lang.json", js_beautify(data, beautifyOpts), fileOpts);
 				});
 			});
 			download(zip.generate({type:"blob"}), "languages_" + date + ".zip", "application/zip");

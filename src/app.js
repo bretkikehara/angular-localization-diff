@@ -99,7 +99,31 @@ angular.module('myApp', [
                 'bundle'
             ],
             groupDefaultExpanded: true,
+            enableFilter: true,
+            isExternalFilterPresent: function () {
+                return $scope.missing;
+            },
+            doesExternalFilterPass: function (node) {
+                var locales = Object.keys($scope.localeCache),
+                    passes = true;
+
+                if ($scope.missing) {
+                    angular.forEach(locales, function (key) {
+                        passes = passes && !!node.data[key];
+                    });
+                    passes = !passes;
+                }
+
+                // node.data
+                return passes;
+            }
         };
+
+        $scope.$watch('missing', function (newVal, oldVal) {
+            if (newVal !== oldVal){
+                $scope.gridOptions.api.onFilterChanged();
+            }
+        });
 
         // load everything into memory;
         function loadBundles (localeIndex, cb) {

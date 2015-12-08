@@ -28,6 +28,10 @@
 
 	    <div class="collapse navbar-collapse">
 			<form class="navbar-form navbar-right">
+				<div class="form-group m-r-md">
+					<input type="checkbox" id="missing-entries" name="missing-entries" ng-model="missing" value="true">
+					<label for="missing-entries">Missing Entries</label>
+				</div>
 				<button type="submit" class="btn btn-default"
 					ng-click="export($event)">
 					Export

@@ -99,7 +99,6 @@ angular.module('myApp', [
                 'bundle'
             ],
             groupDefaultExpanded: true,
-            enableFilter: true,
             isExternalFilterPresent: function () {
                 return $scope.missing;
             },

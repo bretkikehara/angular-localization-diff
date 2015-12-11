@@ -144,7 +144,7 @@ angular.module('myApp', [
 
             angular.forEach(CONFIG.bundles, function (bundleName) {
                 locale.$$bundleReady(bundleName).then(function (bundle) {
-                    $scope.localeCache[localeName][bundleName] = bundle;
+                    $scope.localeCache[localeName][bundleName] = angular.copy(bundle);
                     next();
                 }, function () {
                     console.error("Failed to find bundle: " + bundleName);

@@ -46,7 +46,7 @@ function init (CONFIG) {
             observableAttrs: new RegExp('^data-(?!ng-|i18n)'),
             delimiter: '::'
         })
-        .controller('myApp', function ($q, $timeout, $scope, $window, $interpolate, localeConf, locale) {
+        .controller('myApp', function ($q, $timeout, $scope, $window, $interpolate, localeConf, localeEvents, locale) {
             var downloadjs = $window.download;
 
             $window.onbeforeunload = function(e) {
@@ -113,31 +113,28 @@ function init (CONFIG) {
                     (cb || angular.noop)();
                     return;
                 }
+
                 var localeName = CONFIG.locales[localeIndex];
                 locale.setLocale(localeName);
-                $scope.localeCache[localeName] = {};
 
-                function next() {
-                    bundleIndex++;
-                    if (bundleIndex === CONFIG.bundles.length) {
-                        loadBundles(localeIndex + 1, cb);
-                    }
-                }
-
-                angular.forEach(CONFIG.bundles, function (bundleName) {
-                    locale.$$bundleReady(bundleName).then(function (bundle) {
-                        $scope.localeCache[localeName][bundleName] = angular.copy(bundle);
-                        next();
-                    }, function () {
-                        console.error("Failed to find bundle: " + bundleName);
-                        next();
-                    });
+                locale.ready(CONFIG.bundles).then(function () {
+                    loadBundles(localeIndex + 1, cb)
                 });
             }
 
+            $scope.$on(localeEvents.resourceUpdates, function (e, data) {
+                if (!$scope.localeCache) {
+                    $scope.localeCache = {};
+                }
+                if (!$scope.localeCache[data.locale]) {
+                    $scope.localeCache[data.locale] = {};
+                }
+                $scope.localeCache[data.locale][data.path] = angular.copy(data.bundle);
+            });
+
             function forLocales (cb) {
-                angular.forEach(Object.keys($scope.localeCache).sort(), function (locale) {
-                    cb($scope.localeCache[locale], locale);
+                angular.forEach(Object.keys($scope.localeCache).sort(), function (localeName) {
+                    cb($scope.localeCache[localeName], localeName);
                 });
             }
 
@@ -149,7 +146,6 @@ function init (CONFIG) {
                 var bundleNames = {},
                     rowData = {},
                     headers = [];
-
 
                 headers.push({
                     headerName: 'Bundle',

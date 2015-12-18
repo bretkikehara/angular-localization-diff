@@ -19,7 +19,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular-localization": "bretkikehara/angular-localization#5c0472e13359a8",
+    "angular-localization": "bretkikehara/angular-localization#e5b45402e40d01fb9798340edccbb13b173ecff4",
     "angular-mocks": "~1.4.7",
     "js-beautify": "~1.5.10",
     "downloadjs": "~1.3.1",

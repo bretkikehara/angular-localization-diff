@@ -33,6 +33,15 @@ if (getParams('url')) {
 }
 
 function init (CONFIG) {
+    var r = /chrome\/(\d+)/i,
+        m = r.exec(navigator.userAgent);
+    if (!m || m[1] < 40) {
+        document.querySelector('#untested').style.display = 'block';
+        if (m[1]) {
+            document.querySelector('#chrome').innerHTML = 'Your Chrome version is ' + m[1];
+        }
+        return;
+    }
     angular.module('myApp', [
             'ngLocalize',
             'ngLocalize.Config',

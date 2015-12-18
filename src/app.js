@@ -24,8 +24,12 @@ if (getParams('url')) {
             init(JSON.parse(data.responseText));
         }
     });
-} else if (getParams('config')) {
-    init(JSON.parse(getParams('config')));
+} else {
+    init({
+        basePath: decodeURIComponent(getParams('basePath')),
+        locales: getParams('locales').split(','),
+        bundles: getParams('bundles').split(','),
+    });
 }
 
 function init (CONFIG) {
